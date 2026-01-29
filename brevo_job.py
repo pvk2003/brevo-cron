@@ -34,7 +34,7 @@ BREVO_BASE = "https://api.brevo.com/v3"
 # Nếu muốn schedule hằng ngày:
 # SEND_EVERY_DAY_AT_VN = {"hour": 9, "minute": 0}
 SEND_EVERY_DAY_AT_VN = None
-ACTIVATE_SCHEDULE = False   # MẶC ĐỊNH AN TOÀN
+ACTIVATE_SCHEDULE = True   # MẶC ĐỊNH AN TOÀN
 
 # =========================
 # HTML FRAME (cố định)
