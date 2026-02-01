@@ -8,9 +8,7 @@ val = os.getenv("GSPREAD_SERVICE_ACCOUNT_JSON", "")
 if not val.strip():
     raise SystemExit("Missing env: GSPREAD_SERVICE_ACCOUNT_JSON")
 
-# validate JSON trước khi ghi file
-obj = json.loads(val)
-
+obj = json.loads(val)  # validate JSON
 with open("service_account.json", "w", encoding="utf-8") as f:
     json.dump(obj, f)
 
