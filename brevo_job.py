@@ -34,7 +34,7 @@ BREVO_BASE = "https://api.brevo.com/v3"
 # Nếu muốn schedule hằng ngày:
 # SEND_EVERY_DAY_AT_VN = {"hour": 9, "minute": 0}
 SEND_EVERY_DAY_AT_VN = None
-ACTIVATE_SCHEDULE = True   # MẶC ĐỊNH AN TOÀN
+ACTIVATE_SCHEDULE = False     # MẶC ĐỊNH AN TOÀN
 
 # =========================
 # HTML FRAME (cố định)
@@ -789,19 +789,14 @@ def main():
 
             print(f"[OK] {account_name}: created campaignId={cid} listIds={list_ids}")
 
-            # send/schedule
+            # send/schedule (FIX: không gửi sớm)
             if scheduled_at_acc:
-                if ACTIVATE_SCHEDULE:
-                    dt_sched = iso_z_to_dt(scheduled_at_acc)
-                    if dt_sched <= datetime.now(timezone.utc) + timedelta(minutes=2):
-                        raise RuntimeError(f"scheduledAt too soon/past: {scheduled_at_acc} (refuse activate)")
-                    send_campaign_now(api_key, cid)
-                    st = "scheduled"
-                    msg = f"scheduledAt={scheduled_at_acc} + activated"
-                else:
-                    st = "created"
-                    msg = f"created_with_scheduledAt={scheduled_at_acc} (NOT activated)"
+                # Chỉ cần create campaign có scheduledAt là Brevo sẽ tự gửi đúng giờ
+                # TUYỆT ĐỐI không gọi sendNow ở nhánh này
+                st = "scheduled"
+                msg = f"scheduledAt={scheduled_at_acc}"
             else:
+                # Không có scheduledAt -> tùy SEND_NOW
                 if SEND_NOW:
                     send_campaign_now(api_key, cid)
                     st = "sent"
