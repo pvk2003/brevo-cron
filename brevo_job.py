@@ -847,7 +847,17 @@ def main():
         raise RuntimeError("Tab accounts không có account hợp lệ")
 
     # 1) pick template active từ campaigns
-    tpl = pick_template_for_today_or_rotate(campaigns_ws, logs_ws)
+    # tpl = pick_template_for_today_or_rotate(campaigns_ws, logs_ws)
+    try:
+        tpl = pick_template_for_today_or_rotate(campaigns_ws, logs_ws)
+    except RuntimeError as e:
+        msg = str(e)
+        if "Không có template" in msg or "status=active" in msg:
+            print("[INFO] Hôm nay không có template → skip")
+            return
+        raise
+
+    print("[DEBUG] Picked template OK:", tpl.get("template_key"))
 
     template_key = str(tpl.get("template_key","")).strip() or "active"
 
