@@ -37,66 +37,118 @@ SEND_EVERY_DAY_AT_VN = None
 ACTIVATE_SCHEDULE = False     # MẶC ĐỊNH AN TOÀN
 
 # =========================
-# HTML FRAME (cố định)
+# HTML SHELL (cố định tối thiểu)
 # =========================
-HTML_FRAME = """<!DOCTYPE html>
-<html>
+# =========================
+# HTML SHELL (giống mẫu ISSale)
+# =========================
+# =========================
+# HTML SHELL (giống mẫu ISSale)
+# =========================
+HTML_SHELL = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{TITLE}}</title>
+
+  <style type="text/css">
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+      background-color: #ffffff;
+      font-family: arial, helvetica, sans-serif;
+      color: #3b3f44;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    table { border-collapse: collapse; }
+    a { color: #0092ff; text-decoration: underline; }
+    p { margin: 0 0 12px 0; }
+    ul { margin: 0 0 12px 20px; padding: 0; }
+    li { margin-bottom: 6px; }
+  </style>
 </head>
-<body style="font-family: Arial, Helvetica, sans-serif; font-size:14px; color:#222; line-height:1.6;">
 
-<p>Dear {{ contact.FIRSTNAME | default:"there" }},</p>
-
-{{DYNAMIC_BODY}}
-
-<p>Best regards,</p>
-
-<p>
-<strong>Henry Universes, PhD, CFA, CAIA, PRM, ERP</strong><br>
-<em>20+ years of executive leadership success across organizations totaling USD 600+ billion</em>
-</p>
-
-<p>
-President<br>
-<strong>TAHK Foundation – Universal Connecting &amp; Media Solutions (Nonprofit)</strong>
-</p>
-
-<p>
-Phone: +1 669-265-1454 | +1 (669) 688-3827<br>
-LinkedIn: <a href="https://www.linkedin.com/in/henryuniverses">linkedin.com/in/henryuniverses</a><br>
-Twitter (X): <a href="https://x.com/HenryUniversess">x.com/HenryUniversess</a><br>
-Google Scholar: <a href="https://scholar.google.com/citations?user=FtCo0vcAAAAJ&hl">scholar.google.com</a><br>
-Facebook: <a href="https://www.facebook.com/henryuniversess">facebook.com/henryuniversess</a>
-</p>
-
-<hr>
-
-<p>
-Let’s interact in shaping the future through
-<strong>USD 900+ trillion Options Leadership</strong>,
-unlocking the vast benefits of
-<strong>Tokenization, Cross-Border Payments, and Climate Change–driven compound options</strong>.
-</p>
-
-<p>
-Be among the first to operate visionary models — from global value creation
-to volunteer-driven initiatives, including futuristic agricultural systems
-and the conceptual development of the most touristic and livable
-<strong>SunBlackHole City on Mars</strong>.
-</p>
-
-<p>
-No matter your profession, execute
-<strong>Gold Compound Options Leadership</strong>
-and begin realizing
-<strong>Infinite Profit potential</strong> — instantly and sustainably.
-</p>
-
+<body>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0"
+               style="max-width:600px; width:100%; background-color:#ffffff;">
+          <tr>
+            <td style="padding: 15px;">
+              {{HEADER}}
+              {{BODY}}
+              {{FOOTER}}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 """
+
+# def normalize_header_footer(raw: str) -> str:
+#     """
+#     Header/Footer lấy từ Google Sheet:
+#     - Nếu có tag HTML (p/br/a/strong/em/ul/ol/li/hr) => dùng luôn
+#     - Nếu là text thường => convert sang <p> + <br>, auto-link url/email
+#     """
+#     s = (raw or "").strip()
+#     if not s:
+#         return ""
+
+#     looks_like_html = bool(re.search(r"</?(p|br|a|strong|em|ul|ol|li|hr)\b", s, flags=re.I))
+#     if looks_like_html:
+#         return s
+
+#     # text thường -> html
+#     t = s.replace("\r\n", "\n").replace("\r", "\n").strip()
+#     t = html.escape(t)
+
+#     # autolink email
+#     t = re.sub(
+#         r"([A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,})",
+#         r'<a href="mailto:\1">\1</a>',
+#         t,
+#         flags=re.IGNORECASE
+#     )
+
+#     # autolink url
+#     t = re.sub(
+#         r"(https?://[^\s<]+)",
+#         r'<a href="\1" target="_blank">\1</a>',
+#         t,
+#         flags=re.IGNORECASE
+#     )
+
+#     blocks = re.split(r"\n\s*\n", t)
+#     out = []
+#     for b in blocks:
+#         b = b.strip()
+#         if not b:
+#             continue
+#         out.append("<p>" + "<br>\n".join(b.split("\n")) + "</p>")
+#     return "\n".join(out)
+
+# def build_full_html(title: str, message: str, header_raw: str, footer_raw: str) -> str:
+#     header_html = normalize_header_footer(header_raw)
+#     footer_html = normalize_header_footer(footer_raw)
+
+#     # BODY vẫn dùng renderer hiện tại của bạn (ul/ol/paragraph như screenshot)
+#     body_html = message_to_html_like_screenshot(message)
+
+#     # LƯU Ý: body_html đang tạo <p>, <ul>, <ol> => sẽ tự ăn style ở <style> phía trên
+#     return (HTML_SHELL
+#             .replace("{{TITLE}}", html.escape(title or "Email Campaign"))
+#             .replace("{{HEADER}}", header_html)
+#             .replace("{{BODY}}", body_html)
+#             .replace("{{FOOTER}}", footer_html))
 
 
 # =========================
@@ -343,6 +395,7 @@ def message_to_html_like_screenshot(message: str) -> str:
 
     # escape to keep safe
     msg = html.escape(msg)
+    msg = apply_inline_markdown(msg)
     lines = [ln.rstrip() for ln in msg.split("\n")]
 
     def is_blank(s: str) -> bool:
@@ -418,13 +471,99 @@ def message_to_html_like_screenshot(message: str) -> str:
 
     return "\n".join(out)
 
-def build_full_html(title: str, message: str) -> str:
-    dynamic = message_to_html_like_screenshot(message)
-    return (HTML_FRAME
+def apply_inline_markdown(s: str) -> str:
+    """
+    Input: đã html.escape rồi
+    Output: string có <strong>/<em>
+    """
+    # ***bold+italic***
+    s = re.sub(r"\*\*\*([^\n*][\s\S]*?[^\n*])\*\*\*", r"<strong><em>\1</em></strong>", s)
+    # **bold**
+    s = re.sub(r"\*\*([^\n*][\s\S]*?[^\n*])\*\*", r"<strong>\1</strong>", s)
+    # *italic* (không ăn nhầm **...**)
+    s = re.sub(r"(?<!\*)\*([^\n*][\s\S]*?[^\n*])\*(?!\*)", r"<em>\1</em>", s)
+    return s
+
+def plain_text_to_html_paragraphs(text: str) -> str:
+    t = (text or "").replace("\r\n", "\n").replace("\r", "\n").strip()
+    if not t:
+        return ""
+
+    # 1) escape trước để an toàn
+    t = html.escape(t)
+    t = apply_inline_markdown(t)
+
+    # 2) convert inline markdown an toàn:
+    # ***bold+italic*** trước
+    t = re.sub(r"\*\*\*([^\n*][\s\S]*?[^\n*])\*\*\*", r"<strong><em>\1</em></strong>", t)
+
+    # **bold**
+    t = re.sub(r"\*\*([^\n*][\s\S]*?[^\n*])\*\*", r"<strong>\1</strong>", t)
+
+    # *italic* (không ăn nhầm **...**)
+    t = re.sub(r"(?<!\*)\*([^\n*][\s\S]*?[^\n*])\*(?!\*)", r"<em>\1</em>", t)
+
+    # 3) autolink email (sau markdown để không phá tag)
+    t = re.sub(
+        r"([A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,})",
+        r'<a href="mailto:\1">\1</a>',
+        t,
+        flags=re.IGNORECASE
+    )
+
+    # 4) autolink url
+    t = re.sub(
+        r"(https?://[^\s<]+)",
+        r'<a href="\1" target="_blank">\1</a>',
+        t,
+        flags=re.IGNORECASE
+    )
+
+    # 5) chia đoạn theo dòng trống
+    blocks = re.split(r"\n\s*\n", t)
+    out = []
+    for b in blocks:
+        b = b.strip()
+        if not b:
+            continue
+        out.append("<p>" + "<br>\n".join(b.split("\n")) + "</p>")
+    return "\n".join(out)
+
+
+def normalize_header_footer(raw: str) -> str:
+    """
+    - Nếu input có HTML tag => dùng luôn
+    - Nếu là text => convert sang <p>...
+    - AUTO: nếu có 'Best regards' mà chưa có dashed line ngay sau => tự chèn '--------------------'
+    """
+    s = (raw or "").strip()
+    if not s:
+        return ""
+
+    # auto insert dashed line after Best regards (nếu chưa có)
+    # ví dụ: "Best regards," -> "Best regards,\n--------------------\n"
+    s = re.sub(
+        r"(?im)^(Best regards,?)\s*$",
+        r"\1\n--------------------",
+        s
+    )
+
+    looks_like_html = bool(re.search(r"</?(p|br|a|strong|em|ul|ol|li|hr)\b", s, flags=re.I))
+    if looks_like_html:
+        return s
+
+    return plain_text_to_html_paragraphs(s)
+
+def build_full_html(title: str, message: str, header_raw: str, footer_raw: str) -> str:
+    header_html = normalize_header_footer(header_raw)
+    footer_html = normalize_header_footer(footer_raw)
+    body_html = message_to_html_like_screenshot(message)
+
+    return (HTML_SHELL
             .replace("{{TITLE}}", html.escape(title or "TAHK Foundation"))
-            .replace("{{DYNAMIC_BODY}}", dynamic))
-
-
+            .replace("{{HEADER}}", header_html)
+            .replace("{{BODY}}", body_html)
+            .replace("{{FOOTER}}", footer_html))
 # =========================
 # Accounts loader
 # =========================
@@ -515,7 +654,10 @@ def today_vn() -> str:
 def pick_active_template(campaigns_ws) -> dict:
     ensure_headers(
         campaigns_ws,
-        ["template_key","send_date_vn","rotation","Campaign name","Subject line","Preview text","Message","status"]
+        ["template_key","send_date_vn","rotation","done_date_vn",
+        "Campaign name","Subject line","Preview text",
+        "header_html","Message","footer_html",
+        "status"]
     )
     rows = campaigns_ws.get_all_records()
 
@@ -544,7 +686,10 @@ def template_used_today_any_account(logs_ws, template_key: str) -> bool:
 def pick_template_for_today_or_rotate(campaigns_ws, logs_ws) -> dict:
     ensure_headers(
         campaigns_ws,
-        ["template_key","send_date_vn","rotation","Campaign name","Subject line","Preview text","Message","status"]
+        ["template_key","send_date_vn","rotation","done_date_vn",
+        "Campaign name","Subject line","Preview text",
+        "header_html","Message","footer_html",
+        "status"]
     )
 
     rows = campaigns_ws.get_all_records()
@@ -594,7 +739,10 @@ def pick_template_for_today_or_active(campaigns_ws) -> dict:
     """
     ensure_headers(
         campaigns_ws,
-        ["template_key","send_date_vn","Campaign name","Subject line","Preview text","Message","status"]
+        ["template_key","send_date_vn","rotation","done_date_vn",
+        "Campaign name","Subject line","Preview text",
+        "header_html","Message","footer_html",
+        "status"]
     )
 
     rows = campaigns_ws.get_all_records()
@@ -685,7 +833,9 @@ def main():
     ensure_headers(
         campaigns_ws,
         ["template_key","send_date_vn","rotation","done_date_vn",
-        "Campaign name","Subject line","Preview text","Message","status"]
+        "Campaign name","Subject line","Preview text",
+        "header_html","Message","footer_html",
+        "status"]
     )
 
     # logs headers (đã mở rộng template_key)
@@ -704,7 +854,13 @@ def main():
     base_name = str(tpl.get("Campaign name","")).strip()
     subject   = str(tpl.get("Subject line","")).strip()
     preview   = str(tpl.get("Preview text","")).strip()
+    header_raw = str(tpl.get("header_html", "")).strip()
     message   = str(tpl.get("Message","")).strip()
+    footer_raw = str(tpl.get("footer_html", "")).strip()
+
+    # fallback nếu bạn muốn (không bắt buộc):
+    if not header_raw:
+        header_raw = 'Dear {{ contact.FIRSTNAME | default:"there" }},'
 
     if not base_name or not subject or not message:
         raise RuntimeError("Dòng campaigns status=active thiếu Campaign name / Subject line / Message")
@@ -757,7 +913,8 @@ def main():
             # unique campaign name per account per day
             campaign_name = base_name
 
-            html_content = build_full_html(campaign_name, message)
+            html_content = build_full_html(campaign_name, message, header_raw, footer_raw)
+
 
             payload = {
                 "name": campaign_name,
@@ -772,8 +929,25 @@ def main():
                 payload["scheduledAt"] = scheduled_at_acc
 
             # create
+            # if DRY_RUN:
+            #     print(f"[DRY_RUN] {account_name}: would create '{campaign_name}' listIds={list_ids}")
+            #     append_log(logs_ws, {
+            #         "ts": datetime.now(VN_TZ).strftime("%Y-%m-%dT%H:%M:%S"),
+            #         "template_key": template_key,
+            #         "account_name": account_name,
+            #         "campaign_name": campaign_name,
+            #         "campaign_id": "",
+            #         "status": "dry_run",
+            #         "message": f"listIds={list_ids}"
+            #     })
+            #     continue
             if DRY_RUN:
-                print(f"[DRY_RUN] {account_name}: would create '{campaign_name}' listIds={list_ids}")
+                ensure_dir("previews")
+                fname = f"previews/{slugify(campaign_name)}_{account_name}.html"
+                with open(fname, "w", encoding="utf-8") as f:
+                    f.write(html_content)
+
+                print(f"[DRY_RUN] saved: {fname}")
                 append_log(logs_ws, {
                     "ts": datetime.now(VN_TZ).strftime("%Y-%m-%dT%H:%M:%S"),
                     "template_key": template_key,
@@ -781,7 +955,7 @@ def main():
                     "campaign_name": campaign_name,
                     "campaign_id": "",
                     "status": "dry_run",
-                    "message": f"listIds={list_ids}"
+                    "message": f"saved={fname} | listIds={list_ids}"
                 })
                 continue
 
@@ -804,6 +978,7 @@ def main():
                 else:
                     st = "done"
                     msg = "created"
+
 
             append_log(logs_ws, {
                 "ts": datetime.now(VN_TZ).strftime("%Y-%m-%dT%H:%M:%S"),
